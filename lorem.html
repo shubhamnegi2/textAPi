@@ -18,3 +18,320 @@ Sylvester is a donkey who has so many different wishes, and one day, he accident
 There is a Bird on Your Head by Mo Willems
 Willems' Gerald and Piggie books are eminently popular with young readers, in part because they are told exclusively in dialogue between two beloved friends. This is also what makes them particularly well suited to puppetry! In this story, a bird lands on Gerald's head, and Piggie has to help his friend figure out what to do about it. The hilarity in the story's surprise ending, as well as the theme of abiding friendship, will make the puppet show especially splendid.
 
+@extends('layouts.new-layout')
+
+@section('css')
+<link href="{{ mix('css/personal-loan-home.css') }}" rel="stylesheet" media="screen" />
+@endsection
+
+@section('content')
+<section class="main-section">
+    <div class="personal-loan-home">
+        <div class="pl-banner">
+            <div class="container">
+                <div class="row align-items-center align-items-sm-center align-items-md-center align-items-lg-start">
+                    <div class="col-4 col-sm-3 col-md-3 col-lg-3 text-center">
+                        <img class="img-fluid" src="{{ asset('wishfin-new/images/new-personal-loan/personal-loan-banner.svg')}}" alt="Personal Loan Banner" width="200" height="200" loading="lazy">
+                    </div>
+                    <div class="col-8 col-sm-9 col-md-9 col-lg-9">
+                        <h1>Personal Loan</h1>
+                        <h6>Get Instant Personal Loan Approval at Wishfin</h6>                        
+                    </div>
+                </div>
+                
+                <div class="row mt-n100"> 
+                    <div class="col-lg-3"></div>
+                    <div class="col-12 col-lg-9">
+                        <div class="pl-features">
+                            <div class="feat">
+                                <img src="{{ asset('wishfin-new/images/new-personal-loan/icon-1.svg')}}" alt="Icon 1" width="20" height="20" loading="lazy">
+                                <p>Compare quotes for <strong> Personal Loan </strong> from <strong> top banks </strong>.</p>
+                            </div>
+                            <div class="feat">
+                                <img src="{{ asset('wishfin-new/images/new-personal-loan/icon-2.svg')}}" alt="Icon 1" width="20" height="20" loading="lazy">
+                                <p><strong>Instant Approval</strong> + Maximum Loan Eligibility</p>
+                            </div>
+                            <div class="feat">
+                                <img src="{{ asset('wishfin-new/images/new-personal-loan/icon-3.svg')}}" alt="Icon 1" width="20" height="20" loading="lazy">
+                                <p>Get your CIBIL Credit Score <strong>absolutely free</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="pl-bank-logos logosClientdesk owl-carousel owl-theme position-relative">
+                            @if(isset($allData['associated_bank']['result']) && !empty($allData['associated_bank']['result']))
+                                @foreach($allData['associated_bank']['result'] as $key=>$banks)
+                                <img class="mx-auto w-100" src="{{$banks['image_path']}}" alt="{{$banks['bank_name']}}"  loading="lazy">
+                                @endforeach
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="pl-form">
+            <div class="container">
+                <h3>Let’s find the best Personal loan for you!</h3>
+                <p>Existing user? <a href="{{url('/')}}/existing-user-authentication">Login</a> and get the quote quickly.</p>
+                <form method="post" name="personalloanwidget" class="md-form" action="{{url('personal-loan')}}" id="personalloanwidget" novalidate="novalidate">
+                    @csrf
+                    <input name="source" type="hidden" value="{{$allData['personalloanwidget']['source'] ?? ''}}">
+                    <input name="wish_id" type="hidden" value="{{!empty($allData['personalloanwidget']['wishesId']) ? $allData['personalloanwidget']['wishesId'] : ''}}">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <div class="form-group">
+                                <label for="LoanAmount">Desired Loan Amount</label>
+                                <input name="LoanAmount" type="tel" id="LoanAmount" maxlength="18" class="form-control NumericFormat required" data-d-group="2" value="" aria-required="true">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <div class="form-group">
+                                <label for="Occupation">Employment Status</label>
+                                <select name="Occupation" id="Occupation" class="form-control required" aria-required="true">
+                                    <option value="">Please Select</option>
+                                    <option value="1">Salaried</option>
+                                    <option value="2">Self Employed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-3">
+                            <div class="form-group">
+                                <label for="MonthlyIncome">Monthly Income</label>
+                                <input name="MonthlyIncome" type="tel" id="MonthlyIncome" maxlength="18" class="form-control NumericFormat required" data-d-group="2" value="" aria-required="true">
+                            </div>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-3">
+                            <div class="form-group">
+                                <label for="City">City</label>
+                                <input name="City" type="text" id="City" maxlength="100" class="form-control required City" onkeypress="return CharsetKeyOnly(event);" autocomplete="off" value="" aria-required="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="PL-personal-detail" style="display: nones;">
+                        <div class="col-12 ">
+                            <p class="text-start text-dark mt-4">Just fill a few more details to get quote...</p>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-3">
+                            <div class="form-group">
+                                <label for="FirstName">First Name</label>
+                                <input name="FirstName" type="text" id="FirstName" maxlength="35" class="form-control required" onkeypress="return CharsetKeyOnly(event);" value="" aria-required="true">
+                            </div>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-3">
+                            <div class="form-group">
+                                <label for="LastName">Last Name</label>
+                                <input name="LastName" type="text" id="LastName" maxlength="35" class="form-control required" onkeypress="return CharsetKeyOnly(event);" value="" aria-required="true">
+                            </div>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-3">
+                            <div class="form-group">
+                                <label for="MobileNo">Mobile Number</label>
+                                <input name="MobileNo" type="tel" id="MobileNo" maxlength="10" class="form-control required" onkeypress="return numOnly(event);" value="" aria-required="true">
+                            </div>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-3">
+                            <div class="form-group">
+                                <label for="EmailID">E-Mail ID</label>
+                                <input name="EmailID" type="email" id="EmailID" maxlength="50" class="form-control required" value="" aria-required="true">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <div class="form-group">
+                                <label for="ResidenceStatus">Residential Status</label>
+                                <div class="radio-btns">
+                                    <label class="radio-option">
+                                        <input type="radio" name="ResidenceStatus" id="ResidenceStatus" class="required" value="1" aria-required="true">
+                                        <i></i>
+                                        <span>Owned</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="ResidenceStatus" class="required" value="2" aria-required="true">
+                                        <i></i>
+                                        <span>Rented</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3 salariedDetails">
+                            <div class="form-group">
+                                <label for="CompanyName">Company Name</label>
+                                <input name="CompanyName" type="text" id="CompanyName" maxlength="300" class="form-control CompanyName required" value="" aria-required="true">
+                            </div>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-3 selfEmpDetails">
+                            <div class="form-group">
+                                <label for="AnnualTurnover">Annual Turnover</label>
+                                <select name="AnnualTurnover" id="AnnualTurnover" class="form-control required" aria-required="true">
+                                    @if(isset($allData['personalloanwidget']['annual_turnover']))
+                                    @foreach($allData['personalloanwidget']['annual_turnover'] as $key=>$annualturnover)
+                                    <option value="{{$key == 0 ? '' : $key}}">{{$annualturnover}}</option>
+                                    @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12  col-md-6  selfEmpDetails">
+                            <div class="form-group">
+                                <label for="financialStatementsAudited">Have your Financial Statements been audited?</label>
+                                <div class="radio-btns">
+                                    <label class="radio-option">
+                                        <input type="radio" name="financialStatementsAudited" id="financialStatementsAudited" class="required" value="1" aria-required="true">
+                                        <i></i>
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="financialStatementsAudited" class="required" value="0" aria-required="true">
+                                        <i></i>
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-3 selfEmpDetails">
+                            <div class="form-group">
+                                <label for="officeStatus">Office status </label>
+                                <div class="radio-btns">
+                                    <label class="radio-option">
+                                        <input type="radio" name="officeStatus" id="officeStatus" class="required" value="1" aria-required="true">
+                                        <i></i>
+                                        <span>Owned</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="officeStatus" class="required" value="2" aria-required="true">
+                                        <i></i>
+                                        <span>Rented</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-4 selfEmpDetails">
+                            <div class="form-group">
+                                <label for="CurrentExp">Current Business Stability (in Years)</label>
+                                <input name="CurrentExp" type="text" id="CurrentExp" maxlength="2" class="form-control required" onkeypress="return numOnly(event);" pattern="[0-9]+" value="" aria-required="true">
+                            </div>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-2 selfEmpDetails">
+                            <div class="form-group">
+                                <label for="LoanAny_check">Any Loan Running</label>
+                                <div class="radio-btns">
+                                    <label class="radio-option">
+                                        <input type="radio" name="LoanAny_check" id="LoanAny_check" class="required" value="1" aria-required="true">
+                                        <i></i>
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="LoanAny_check" class="required" value="0" aria-required="true">
+                                        <i></i>
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-3 selfEmpDetails">
+                            <div class="form-group">
+                                <label for="PrimaryBankAcc">Primary Account in which Bank?</label>
+                                <input name="PrimaryBankAcc" type="text" id="PrimaryBankAcc" maxlength="35" class="form-control required Bank" onkeypress="return CharsetKeyOnly(event);" value="" aria-required="true" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-3" id="otherBankName" style="display: none;">
+                            <div class="form-group">
+                                <label for="other_bank_name">Please Mention Bank Name</label>
+                                <input name="other_bank_name" type="text" id="other_bank_name" maxlength="50" class="form-control required" onkeypress="return CharsetKeyOnly(event);" autocomplete="off" value="" aria-required="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12  " id="checkbox-field" style="display: none;">
+                            <div class="form-group">
+                                <div class="check-field">
+                                    <label class="check_show">
+                                        <input type="checkbox" name="accept" id="accept" class="required" checked="checked" value="1" aria-required="true">
+                                        <i></i>
+                                        I authorize Wishfin.com &amp; its partnering banks to contact me to explain the product &amp; I Agree to <a href="{{url('/')}}/privacy-policy" target="_blank"> Privacy policy</a> and <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Terms and Conditions.</a>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12  text-center mt-4">
+                            <button type="submit" name="submitbutton" id="submitbutton" class="formSubmitButton">Get Quotes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div> 
+        <!-- All Dynamic Contents Start with ROI and Eligibility Form -->    
+        @if(!empty($allData['page_content']))
+            @php        
+            $tags = array('{roi_form}', '{eligibility_form}');
+            $replacement   = array($roiform, $eligibility_form);
+            @endphp
+            {!!str_replace($tags, $replacement, $allData['page_content'])!!}
+        @endif
+       
+        <!-- blog Footer Section -->
+        <div class="blog-section sec-card">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 ">
+                        <div class="blog-heading-box">
+                            <h3 class="mb-0">Recent Articles</h3>
+                            <a class="link-text" href="{{url('/')}}/blog/">
+                                See more articles
+                                <img class="ms-2" src="{{ asset('wishfin-new/images/home-page/link-arrow.svg')}}" alt="Right Arrow" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-12 ">
+                        <div class="row cust-blogs-row">
+                            <div class="col-11  col-md-5 col-lg-4 blog-card">
+                                <a href="{{url('/')}}/credit-score/how-to-improve-your-cibil-score/" class="text-decoration-none" target="blank">
+                                    <img src="{{ asset('wishfin-new/images/home-page/blog-1.jpg')}}" alt="How to Improve your CIBIL Score Immediately?" loading="lazy" />
+                                    <div class="card-content text-start">
+                                        <h4>How to Improve your CIBIL Score Immediately?</h4>
+                                        <p class="mb-0">{{Str::limit("A CIBIL Score is the first thing a bank enquires about before lending any loan or a credit card to the applicant. So, you must always keep a positive CIBIL Score before you apply for any debt. But sometimes due to uncertainties and financial mismanagement, an individual is unable to repay the loan on time and it affects his CIBIL Score.", 185, $end='...')}}</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-11  col-md-5 col-lg-4 blog-card">
+                                <a href="{{url('/')}}/personal-loans/what-is-the-best-way-to-get-a-personal-loan-in-india/" class="text-decoration-none" target="blank">
+                                    <img src="{{ asset('wishfin-new/images/home-page/blog-2.jpg')}}" alt="How to Improve your CIBIL Score Immediately?" loading="lazy" />
+                                    <div class="card-content text-start">
+                                        <h4>What is the Best Way to Get a Personal Loan in India?</h4>
+                                        <p class="mb-0">{{Str::limit("The quick approval, fast disbursal and easy documentation make personal loans one of the best credit options for people these days. With this loan, you can meet purposes like marriage, travel, medical emergencies, and much more. But it’s the time of taking a personal loan that matters the most.", 185, $end='...')}}</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-11  col-md-5 col-lg-4 blog-card">
+                                <a href="{{url('/')}}/home-loans/latest-rbi-guidelines-for-home-loans/" class="text-decoration-none" target="blank">
+                                    <img src="{{ asset('wishfin-new/images/home-page/blog-3.jpg')}}" alt="How to Improve your CIBIL Score Immediately?" loading="lazy" />
+                                    <div class="card-content text-start">
+                                        <h4>Latest RBI Guidelines for Home Loans</h4>
+                                        <p class="mb-0">{{Str::limit("The Reserve Bank of India (RBI) brought changes recently in terms of interest rates and LTV ratio. The RBI has ensured that home loan interest rates run in parallel with its repo rate, which is the rate at which the central bank extends loans to commercial banks to help meet their short-term obligations.", 185, $end='...')}}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Terms & Conditions</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @include('includes.terms-and-condition')
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endsection
+
+@section('scripts')
+<script src="{{ mix('js/personal-loan-home.js')}}"></script>
+@endsection
